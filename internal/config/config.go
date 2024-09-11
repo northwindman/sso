@@ -20,13 +20,17 @@ type GRPCConfig struct {
 }
 
 func MustLoad() *Config {
-	var cfg = &Config{}
-
 	configPath := fetchConfigPath()
 
 	if configPath == "" {
 		panic("path to config file not exist\n")
 	}
+
+	return MustLoadByPath(configPath)
+}
+
+func MustLoadByPath(configPath string) *Config {
+	var cfg = &Config{}
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		panic("config file does not exist: " + configPath)
@@ -37,6 +41,7 @@ func MustLoad() *Config {
 	}
 
 	return cfg
+
 }
 
 // fetchConfigPath fetches config path from command line flag or environment variable.
