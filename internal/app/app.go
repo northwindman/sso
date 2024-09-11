@@ -2,28 +2,32 @@ package app
 
 import (
 	grpcapp "github.com/northwindman/sso/internal/app/grpc"
+	"github.com/northwindman/sso/internal/services/auth"
+	"github.com/northwindman/sso/internal/storage/sqlite"
 	"log/slog"
 	"time"
 )
 
 type App struct {
-	GRPCSrv *grpcapp.App
+	GRPCServer *grpcapp.App
 }
 
-// New creates new gRPC server app
 func New(
 	log *slog.Logger,
 	grpcPort int,
 	storagePath string,
 	tokenTTL time.Duration,
 ) *App {
-	// TODO: инициализировать хранилище
+	storage, err := sqlite.New(storagePath)
+	if err != nil {
+		panic(err)
+	}
 
-	// TODO: init auth service
+	authService := auth.New(log, storage, storage, storage, tokenTTL)
 
-	grpcApp := grpcapp.New(log, grpcPort)
+	grpcApp := grpcapp.New(log, authService, grpcPort)
 
 	return &App{
-		GRPCSrv: grpcApp,
+		GRPCServer: grpcApp,
 	}
 }
