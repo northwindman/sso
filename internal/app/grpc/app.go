@@ -4,8 +4,6 @@ import (
 	"fmt"
 	authgrpc "github.com/northwindman/sso/internal/grpc/auth"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"log/slog"
 	"net"
 )
@@ -23,7 +21,7 @@ func New(
 	port int,
 ) *App {
 
-	grpcServer := grpc.()
+	gRPCServer := grpc.NewServer()
 
 	authgrpc.Register(gRPCServer, authService)
 
@@ -33,6 +31,7 @@ func New(
 		port:       port,
 	}
 }
+
 // MustRun runs gRPC server and panics if any error occurs.
 func (a *App) MustRun() {
 	if err := a.Run(); err != nil {

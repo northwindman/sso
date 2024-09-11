@@ -161,10 +161,7 @@ func (a *Auth) RegisterNewUser(
 }
 
 // IsAdmin checks if user is admin.
-func (a *Auth) IsAdmin(
-	ctx context.Context,
-	userID int64,
-) (bool, error) {
+func (a *Auth) IsAdmin(ctx context.Context, userID int64) (bool, error) {
 	const op = "auth.IsAdmin"
 
 	log := a.log.With(

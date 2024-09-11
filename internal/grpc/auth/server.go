@@ -29,7 +29,7 @@ type Auth interface {
 		password string,
 	) (userID int64, err error)
 
-	isAdmin(
+	IsAdmin(
 		ctx context.Context,
 		userID int64,
 	) (bool, error)
@@ -102,7 +102,7 @@ func (s *serverAPI) IsAdmin(
 		return nil, err
 	}
 
-	isAdmin, err := s.auth.isAdmin(ctx, req.GetUserId())
+	isAdmin, err := s.auth.IsAdmin(ctx, req.GetUserId())
 	if err != nil {
 		if errors.Is(err, auth.ErrUserNotFound) {
 			return nil, status.Error(codes.NotFound, err.Error())
@@ -134,7 +134,7 @@ func validateLogin(req *ssov1.LoginRequest) error {
 
 func validateRegister(req *ssov1.RegisterRequest) error {
 	if req.GetEmail() == "" {
-		return status.Error(codes.InvalidArgument, "missing email")
+		return status.Error(codes.InvalidArgument, "email is required")
 	}
 
 	if !isValidEmail(req.GetEmail()) {
@@ -142,7 +142,7 @@ func validateRegister(req *ssov1.RegisterRequest) error {
 	}
 
 	if req.GetPassword() == "" {
-		return status.Error(codes.InvalidArgument, "missing password")
+		return status.Error(codes.InvalidArgument, "password is required")
 	}
 
 	return nil
